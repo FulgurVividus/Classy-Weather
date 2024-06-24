@@ -11,7 +11,8 @@ class Counter extends React.Component {
     this.state = { count: 1 };
     // manually bind 'this' keyword with the function. By doing this, we give this method (handleDecrease) access to the current component instance
     this.handleDecrease = this.handleDecrease.bind(this);
-    this.handleIncrease = this.handleIncrease.bind(this);
+
+    // this.handleIncrease = this.handleIncrease.bind(this);
   }
 
   handleDecrease() {
@@ -22,11 +23,12 @@ class Counter extends React.Component {
     });
   }
 
-  handleIncrease() {
+  // great advantage of arrow function, is that they don't loose their binding to 'this'. They get access to the surrounding 'this'. So, we don't have to manually bind in the 'constructor'.
+  handleIncrease = () => {
     this.setState((currCount) => {
       return { count: currCount.count + 1 };
     });
-  }
+  };
 
   // this 'render' method must be as clean as possible, means little render logic. However, a very simple logic is allowed to implement
   render() {
