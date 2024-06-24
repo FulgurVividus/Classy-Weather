@@ -1,5 +1,7 @@
 # Classy Weather 🌤️
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/8e9a97b5-6f23-4f04-863a-e054c2c3a160/deploy-status)](https://app.netlify.com/sites/fulgur-vividus-classy-weather/deploys)
+
 ## Overview 👁️
 
 Classy Weather is a weather application built with React class components, developed using `npx create-react-app`. This project serves as a practice for using React class components, which were the primary way to manage state and lifecycle methods before the introduction of hooks in React v16.8. The app allows users to search for weather information and saves the search data using local storage.
