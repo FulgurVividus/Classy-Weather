@@ -33,14 +33,16 @@ function formatDay(dateStr) {
 }
 
 class App extends React.Component {
+  // it'll be placed on component instance
+  // no 'this' keyword as it's also component instance, so we don't need it
+  state = {
+    location: "New York",
+    isLoading: false,
+    displayLocation: "",
+    weather: {},
+  };
   constructor(props) {
     super(props);
-    this.state = {
-      location: "New York",
-      isLoading: false,
-      displayLocation: "",
-      weather: {},
-    };
     this.fetchWeather = this.fetchWeather.bind(this);
   }
 
@@ -90,7 +92,19 @@ class App extends React.Component {
               onChange={(e) => this.setState({ location: e.target.value })}
             />
           </div>
-          <button onClick={this.fetchWeather}>Get Weather</button>
+          <button
+            onClick={this.fetchWeather}
+            style={{
+              background: "none",
+              outline: "none",
+              padding: "6px",
+              cursor: "pointer",
+              border: "1px solid black",
+              borderRadius: "5px",
+            }}
+          >
+            Get Weather
+          </button>
 
           {this.state.isLoading && <p className="loader">Loading...</p>}
 
