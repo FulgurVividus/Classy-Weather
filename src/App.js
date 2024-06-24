@@ -32,11 +32,12 @@ function formatDay(dateStr) {
   }).format(new Date(dateStr));
 }
 
+// App class component
 class App extends React.Component {
   // it'll be placed on component instance
   // no 'this' keyword as it's also component instance, so we don't need it
   state = {
-    location: "New York",
+    location: "",
     isLoading: false,
     displayLocation: "",
     weather: {},
@@ -47,9 +48,13 @@ class App extends React.Component {
   }
 
   async fetchWeather() {
-    this.setState({ isLoading: true });
+    if (this.state.location.length < 2) {
+      return this.setState({ weather: {} });
+    }
 
     try {
+      this.setState({ isLoading: true });
+
       // 1) Getting location (geocoding)
       const geoRes = await fetch(
         `https://geocoding-api.open-meteo.com/v1/search?name=${this.state.location}`
@@ -83,6 +88,25 @@ class App extends React.Component {
     this.setState({ location: e.target.value });
   };
 
+  // Life cycle methods
+
+  // is called immediately after rendering like useEffect []
+  componentDidMount() {
+    // this.fetchWeather();
+
+    this.setState({ location: localStorage.getItem("location") || "" });
+  }
+
+  // is called on re-renders
+  // React gives access to previous state & props. It's like useEffect [location]
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.location !== prevState.location) {
+      this.fetchWeather();
+
+      localStorage.setItem("location", this.state.location);
+    }
+  }
+
   render() {
     return (
       <>
@@ -92,23 +116,10 @@ class App extends React.Component {
             location={this.state.location}
             onChangeLocation={this.setLocation}
           />
-          <button
-            onClick={this.fetchWeather}
-            style={{
-              background: "none",
-              outline: "none",
-              padding: "6px",
-              cursor: "pointer",
-              border: "1px solid black",
-              borderRadius: "5px",
-            }}
-          >
-            Get Weather
-          </button>
 
           {this.state.isLoading && <p className="loader">Loading...</p>}
 
-          {this.state.weather.weathercode && (
+          {this.state.weather?.weathercode && (
             <Weather
               weather={this.state.weather}
               location={this.state.displayLocation}
@@ -138,6 +149,11 @@ class Input extends React.Component {
 }
 
 class Weather extends React.Component {
+  // is like the 'clean up' function of useEffect
+  componentWillUnmount() {
+    // some code...
+  }
+
   render() {
     const {
       temperature_2m_max: max,
@@ -183,3 +199,6 @@ class Day extends React.Component {
     );
   }
 }
+
+//! SOME NOTES:
+// 1. Life cycle methods - are special methods that all React components get access to and which we can use tu run side effects at different points of the component life cycle (mount, re-render, unmount)
