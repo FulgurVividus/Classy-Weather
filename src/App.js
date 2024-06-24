@@ -53,7 +53,7 @@ class App extends React.Component {
         `https://geocoding-api.open-meteo.com/v1/search?name=${this.state.location}`
       );
       const geoData = await geoRes.json();
-      console.log(geoData);
+      // console.log(geoData);
 
       if (!geoData.results) throw new Error("Location not found");
 
@@ -93,6 +93,13 @@ class App extends React.Component {
           <button onClick={this.fetchWeather}>Get Weather</button>
 
           {this.state.isLoading && <p className="loader">Loading...</p>}
+
+          {this.state.weather.weathercode && (
+            <Weather
+              weather={this.state.weather}
+              location={this.state.displayLocation}
+            />
+          )}
         </div>
       </>
     );
@@ -100,3 +107,50 @@ class App extends React.Component {
 }
 
 export default App;
+
+class Weather extends React.Component {
+  render() {
+    const {
+      temperature_2m_max: max,
+      temperature_2m_min: min,
+      time: dates,
+      weathercode: codes,
+    } = this.props.weather;
+    return (
+      <>
+        <div>
+          <h2>Weather {this.props.location}</h2>
+          <ul className="weather">
+            {dates.map((date, index) => (
+              <Day
+                date={date}
+                max={max.at(index)}
+                min={min.at(index)}
+                code={codes.at(index)}
+                isToday={index === 0}
+                key={date}
+              />
+            ))}
+          </ul>
+        </div>
+      </>
+    );
+  }
+}
+
+// If we don't have to initialize states or manually bind the 'this' to some event handler methods, then we don't need 'constructor' function
+class Day extends React.Component {
+  render() {
+    const { date, max, min, code, isToday } = this.props;
+
+    return (
+      <li className="day">
+        <span>{getWeatherIcon(code)}</span>
+        <p>{isToday ? "Today" : formatDay(date)}</p>
+        <p>
+          {Math.floor(min)}&deg; &mdash; <strong>{Math.ceil(max)}&deg;</strong>
+        </p>
+      </li>
+    );
+  }
+}
